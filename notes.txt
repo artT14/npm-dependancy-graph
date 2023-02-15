@@ -1,0 +1,10 @@
+Foundation:
+- Svelte?
+- No need for a framework
+
+For Graph Visualization:
+https://code.tutsplus.com/articles/best-free-javascript-graph-visualization-libraries--cms-41710
+
+For Graph Data Parsing:
+- npm ls --all
+- @npmcli/arborist
