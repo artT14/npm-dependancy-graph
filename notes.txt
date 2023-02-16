@@ -1,10 +1,17 @@
 Foundation:
-- Svelte?
-- No need for a framework
+- Vanilla HTML + JS
+- WebViews API - https://code.visualstudio.com/api/extension-guides/webview
 
 For Graph Visualization:
-https://code.tutsplus.com/articles/best-free-javascript-graph-visualization-libraries--cms-41710
+- https://code.tutsplus.com/articles/best-free-javascript-graph-visualization-libraries--cms-41710
 
 For Graph Data Parsing:
-- npm ls --all
-- @npmcli/arborist
+- npm ls --json --all 
+- npm audit --json --all
+
+
+PSEUDOCODE:
+Q. How do I access the user workspace?
+- grab json data from user workspace
+- pass data to rendering function
+- render graph
