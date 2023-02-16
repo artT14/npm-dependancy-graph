@@ -13,6 +13,13 @@ const {execSync} = require('child_process');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
+	// fetch workspace rootPath
+	const rootPath = vscode.workspace.workspaceFolders || ".";
+	// run npm ls in workspace
+	const ls = execSync("npm ls --all --json",{cwd: rootPath[0].uri._fsPath}).toString();
+	// can run np audit in same workspace
+	// const audit = execSync("npm audit --json",{cwd: rootPath[0].uri._fsPath}).toString();
+	console.log(ls);
 	let cmd = vscode.commands.registerCommand('catCoding.start', ()=>{
 		const panel = vscode.window.createWebviewPanel(
 			'catCoding', //webview identifier
@@ -20,7 +27,6 @@ function activate(context) {
 			vscode.ViewColumn.One, //edit column to show wabpanel in
 			{} //view options
 		);
-		const ls = context //execSync("npm ls --all --json").toString()
 		panel.webview.html = getWebviewContent(ls);
 
 	});
@@ -28,7 +34,7 @@ function activate(context) {
 	context.subscriptions.push(cmd);
 }
 
-function getWebviewContent(ls) {
+function getWebviewContent() {
 	return `<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -38,7 +44,6 @@ function getWebviewContent(ls) {
 		</head>
 		<body>
 			<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
-			<p>${ls}</p>
 		</body>
 	</html>`;
 }
