@@ -20,50 +20,41 @@ function activate(context) {
 	// can run np audit in same workspace
 	// const audit = execSync("npm audit --json",{cwd: rootPath[0].uri._fsPath}).toString();
 	// console.log(ls);
+
+
+
 	let cmd = vscode.commands.registerCommand('catCoding.start', ()=>{
 		const panel = vscode.window.createWebviewPanel(
 			'catCoding', //webview identifier
 			'Cat Coding', //title
 			vscode.ViewColumn.One, //edit column to show wabpanel in
-			{} //view options
+			{
+				enableScripts: true
+			} //view options
 		);
-		panel.webview.html = getWebviewContent();
+		// uri for graph.js
+		const forceGraphScript = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'forceGraph.js'));
+		panel.webview.html = getWebviewContent(forceGraphScript);
 
 	});
 
 	context.subscriptions.push(cmd);
 }
 
-function getWebviewContent() {
+function getWebviewContent(script) {
 	return `<!DOCTYPE html>
-	<html lang="en">
+		<html lang="en">
 		<head>
-			<meta charset="UTF-8">
-			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-			<title>Cat Coding</title>
+			<style> body { margin: 0; } </style>
+		
+			<script src="https://unpkg.com/force-graph/dist/force-graph.min.js"></script>
+			<!--<script src="../../dist/force-graph.js"></script>-->
 		</head>
+		
 		<body>
-			<p>check</p>
 			<div id="graph"></div>
-			<script type="module">
-				// Random tree
-				import ForceGraph from 'force-graph';
-				const N = 300;
-				const gData = {
-				nodes: [...Array(N).keys()].map(i => ({ id: i })),
-				links: [...Array(N).keys()]
-					.filter(id => id)
-					.map(id => ({
-					source: id,
-					target: Math.round(Math.random() * (id-1))
-					}))
-				};
-				console.log("check")
-				const Graph = ForceGraph()
-				(document.getElementById('graph'))
-					.linkDirectionalParticles(2)
-					.graphData(gData);
-			</script>
+		
+			<script src="${script}"></script>
 		</body>
 	</html>`;
 }

@@ -11,5 +11,7 @@ For Graph Data Parsing:
 
 
 PSEUDOCODE:
+- have npm generate graph data
+- parse the data to appropriate format
 - pass data to rendering function
-- render graph
+- render the data
