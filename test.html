@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>Cat Coding</title>
+		</head>
+		<body>
+			<p>check</p>
+			<div id="graph"></div>
+			<script type="module">
+				// Random tree
+				import ForceGraph from 'force-graph';
+				const N = 300;
+				const gData = {
+				nodes: [...Array(N).keys()].map(i => ({ id: i })),
+				links: [...Array(N).keys()]
+					.filter(id => id)
+					.map(id => ({
+					source: id,
+					target: Math.round(Math.random() * (id-1))
+					}))
+				};
+				console.log("check")
+				const Graph = ForceGraph()
+				(document.getElementById('graph'))
+					.linkDirectionalParticles(2)
+					.graphData(gData);
+			</script>
+		</body>
+	</html>

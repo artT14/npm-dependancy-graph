@@ -16,10 +16,10 @@ function activate(context) {
 	// fetch workspace rootPath
 	const rootPath = vscode.workspace.workspaceFolders || ".";
 	// run npm ls in workspace
-	const ls = execSync("npm ls --all --json",{cwd: rootPath[0].uri._fsPath}).toString();
+	// const ls = execSync("npm ls --all --json",{cwd: rootPath[0].uri._fsPath}).toString();
 	// can run np audit in same workspace
 	// const audit = execSync("npm audit --json",{cwd: rootPath[0].uri._fsPath}).toString();
-	console.log(ls);
+	// console.log(ls);
 	let cmd = vscode.commands.registerCommand('catCoding.start', ()=>{
 		const panel = vscode.window.createWebviewPanel(
 			'catCoding', //webview identifier
@@ -27,7 +27,7 @@ function activate(context) {
 			vscode.ViewColumn.One, //edit column to show wabpanel in
 			{} //view options
 		);
-		panel.webview.html = getWebviewContent(ls);
+		panel.webview.html = getWebviewContent();
 
 	});
 
@@ -43,7 +43,27 @@ function getWebviewContent() {
 			<title>Cat Coding</title>
 		</head>
 		<body>
-			<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
+			<p>check</p>
+			<div id="graph"></div>
+			<script type="module">
+				// Random tree
+				import ForceGraph from 'force-graph';
+				const N = 300;
+				const gData = {
+				nodes: [...Array(N).keys()].map(i => ({ id: i })),
+				links: [...Array(N).keys()]
+					.filter(id => id)
+					.map(id => ({
+					source: id,
+					target: Math.round(Math.random() * (id-1))
+					}))
+				};
+				console.log("check")
+				const Graph = ForceGraph()
+				(document.getElementById('graph'))
+					.linkDirectionalParticles(2)
+					.graphData(gData);
+			</script>
 		</body>
 	</html>`;
 }

@@ -11,6 +11,5 @@ For Graph Data Parsing:
 
 
 PSEUDOCODE:
-- grab json data from user workspace
 - pass data to rendering function
 - render graph
