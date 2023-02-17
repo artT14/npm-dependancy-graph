@@ -3,6 +3,7 @@
 const vscode = require('vscode');
 // const {series} = require('async');
 const {execSync} = require('child_process');
+const {TextEncoder } = require('util')
 
 
 
@@ -12,11 +13,15 @@ const {execSync} = require('child_process');
 /**
  * @param {vscode.ExtensionContext} context
  */
-function activate(context) {
+async function activate(context) {
 	// fetch workspace rootPath
 	const rootPath = vscode.workspace.workspaceFolders || ".";
+	const workspacePath = rootPath[0].uri._fsPath;
+	console.log(workspacePath);
 	// run npm ls in workspace
-	// const ls = execSync("npm ls --all --json",{cwd: rootPath[0].uri._fsPath}).toString();
+	const ls = execSync("npm ls --all --json",{cwd: workspacePath}).toString();
+	const dir = vscode.Uri.joinPath(rootPath[0].uri,'.dependancy-graph', 'ls.json')
+	await vscode.workspace.fs.writeFile(dir,new TextEncoder().encode(ls))	
 	// can run np audit in same workspace
 	// const audit = execSync("npm audit --json",{cwd: rootPath[0].uri._fsPath}).toString();
 	// console.log(ls);
@@ -34,14 +39,14 @@ function activate(context) {
 		);
 		// uri for graph.js
 		const forceGraphScript = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'forceGraph.js'));
-		panel.webview.html = getWebviewContent(forceGraphScript);
+		panel.webview.html = getWebviewContent(forceGraphScript,dir.path);
 
 	});
 
 	context.subscriptions.push(cmd);
 }
 
-function getWebviewContent(script) {
+function getWebviewContent(script,lspath) {
 	return `<!DOCTYPE html>
 		<html lang="en">
 		<head>
@@ -53,8 +58,8 @@ function getWebviewContent(script) {
 		
 		<body>
 			<div id="graph"></div>
-		
-			<script src="${script}"></script>
+			<script src="${script}" lspath="${lspath}">
+			</script>
 		</body>
 	</html>`;
 }

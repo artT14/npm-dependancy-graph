@@ -11,7 +11,10 @@ For Graph Data Parsing:
 
 
 PSEUDOCODE:
-- have npm generate graph data
+- have npm generate graph data 
 - parse the data to appropriate format
 - pass data to rendering function
 - render the data
+
+ADDITIONAL FEATURES:
+- store graph data in file, check if exists, use it, else regenerate
