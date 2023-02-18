@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-	let dataVariable;
 	window.addEventListener('message', event => {
 		const message = event.data; // The JSON data our extension sent
 		switch (message.command) {
@@ -9,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
 				break;
 		}
 	})
-}) 
+})
+
 function parseNpmGraph (string){
 	const graphData = {
 		nodes: [],
@@ -22,18 +22,24 @@ function parseNpmGraph (string){
 	function dfs(node,data, layer){
 		if (!data.dependencies) return;
 		Object.entries(data.dependencies)
-			.filter(([key, val])=>!hash.has(key+val.version))
 			.forEach(([key, val])=>{
-				graphData.nodes.push({
-					id: key+val.version,
-					name: key+val.version,
-					layer
-				});
-				graphData.links.push({
-					source: key+val.version,
-					target: node+data.version
-				})
-				hash.add(key+val.version);
+				const curr = key+val.version
+				const dependant = node+data.version
+				if(!hash.has(curr)){
+					graphData.nodes.push({
+						id: curr,
+						name: curr,
+						layer
+					});
+					hash.add(curr);
+				}
+				if(!hash.has(curr+dependant)){
+					graphData.links.push({
+						source: curr,
+						target: dependant
+					})
+					hash.add(curr+dependant)
+				}
 				dfs(key,val,layer+1);
 			})
 	}
@@ -41,23 +47,30 @@ function parseNpmGraph (string){
 	graphData.nodes.push({
 		id: tree.name+tree.version,
 		name: tree.name+tree.version,
-		layer: 0
+		layer: 1
 	})
 	hash.add(tree.name+tree.version)
 
 	// add first layer of dependencies
 	Object.entries(tree.dependencies).forEach(([key, val])=>{
-		graphData.nodes.push({
-			id: key+val.version,
-			name: key+val.version,
-			layer: 1
-		});
-		graphData.links.push({
-			source: key+val.version,
-			target: tree.name+tree.version
-		})
-		hash.add(key+val.version);
-		dfs(key,val, 2);
+		const curr = key+val.version
+		const dependant = tree.name+tree.version
+		if(!hash.has(curr)){
+			graphData.nodes.push({
+				id: curr,
+				name: curr,
+				layer: 2
+			});
+			hash.add(curr);
+		}
+		if(!hash.has(curr+dependant)){
+			graphData.links.push({
+				source: curr,
+				target: dependant
+			})
+			hash.add(curr+dependant)
+		}
+		dfs(key,val, 3);
 	})
 	return graphData;
 }
@@ -81,6 +94,16 @@ function drawTree(graphData){
 	const Graph = ForceGraph()
 		(document.getElementById('graph'))
 		.graphData(graphData)
+		.linkColor(() => 'rgba(255,255,255,0.1)')
 		.nodeAutoColorBy('layer')
-		;
+		.nodeCanvasObject((node, ctx) => nodePaint(node, ctx));
+	
+	function nodePaint( node, ctx) {
+		ctx.fillStyle = node.color;
+		//draw circle
+		const radius = Math.abs(10 / (1 + Math.log(node.layer)))
+		ctx.beginPath(); 
+		ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false); 
+		ctx.fill();
+	}
 }
