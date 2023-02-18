@@ -10,9 +10,8 @@ For Graph Data Parsing:
 - npm audit --json --all
 
 
-PSEUDOCODE:
-- parse the data to appropriate format
-- render the data
-
 ADDITIONAL FEATURES:
 - instead of always generating graph data, use packagelock.json instead
+- hide some nodes, since there are alot then let user expand them
+- color it make it look nice
+- refactor code
