@@ -10,8 +10,8 @@ For Graph Data Parsing:
 - npm audit --json --all
 
 
-BUGS:
-- canvas doesn't render when switching tabs
+
+
 
 ADDITIONAL FEATURES:
 - hide some nodes, since there are alot then let user expand them
@@ -22,3 +22,6 @@ IDEAS:
 ? instead of always generating graph data, use packagelock.json instead
 ? add a feature for python projects
 ? add a feature for ruby projects
+
+BUGS:
+none known
