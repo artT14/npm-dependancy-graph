@@ -60,7 +60,6 @@ function getWebviewContent(forceGraphScript) {
 		</head>
 		
 		<body>
-			<p id="test">test</p>
 			<div id="graph"></div>
 			<script src="${forceGraphScript}">
 			</script>

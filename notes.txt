@@ -24,4 +24,4 @@ IDEAS:
 ? add a feature for ruby projects
 
 BUGS:
-none known
+- workspace must contain package-lock.json (can override this by pressing a button in UI that parses the URI and passes it to the extension)

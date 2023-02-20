@@ -36,7 +36,7 @@ function parseNpmGraph (string){
 				if(!hash.has(curr+dependant)){
 					graphData.links.push({
 						source: curr,
-						target: dependant
+						target: dependant,
 					})
 					hash.add(curr+dependant)
 				}
@@ -66,7 +66,7 @@ function parseNpmGraph (string){
 		if(!hash.has(curr+dependant)){
 			graphData.links.push({
 				source: curr,
-				target: dependant
+				target: dependant,
 			})
 			hash.add(curr+dependant)
 		}
@@ -90,13 +90,15 @@ function drawTree(graphData){
 	// console.log(gData);
 
 	// gen a number persistent color from around the palette
-
+	
 	const Graph = ForceGraph()
 		(document.getElementById('graph'))
 		.graphData(graphData)
 		.linkColor(() => 'rgba(255,255,255,0.1)')
 		.nodeAutoColorBy('layer')
-		.nodeCanvasObject((node, ctx) => nodePaint(node, ctx));
+		.nodeCanvasObject((node, ctx) => nodePaint(node, ctx))
+		.linkCurvature('curvature')
+		.linkDirectionalParticles(1)
 	
 	function nodePaint( node, ctx) {
 		ctx.fillStyle = node.color;
