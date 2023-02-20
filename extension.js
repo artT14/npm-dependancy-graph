@@ -37,7 +37,8 @@ async function activate(context) {
 			'Cat Coding', //title
 			vscode.ViewColumn.One, //edit column to show wabpanel in
 			{
-				enableScripts: true
+				enableScripts: true,
+				retainContextWhenHidden: true
 			} //view options
 		);
 		// uri for graph.js
@@ -59,7 +60,7 @@ function getWebviewContent(forceGraphScript) {
 		</head>
 		
 		<body>
-			<p id="test"></p>
+			<p id="test">test</p>
 			<div id="graph"></div>
 			<script src="${forceGraphScript}">
 			</script>
