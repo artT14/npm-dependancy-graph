@@ -14,9 +14,9 @@
   "contributes": {
     "commands": [
       {
-        "command": "catCoding.start",
-        "title": "Start new cat coding session",
-        "category": "Cat Coding"
+        "command": "npm-dependancy-graph.start",
+        "title": "Visualize NPM Dependency Graph",
+        "category": "NPM Dependency Graph"
       }
     ]
   },

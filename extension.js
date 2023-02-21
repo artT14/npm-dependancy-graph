@@ -31,10 +31,10 @@ async function activate(context) {
 
 
 
-	let cmd = vscode.commands.registerCommand('catCoding.start', ()=>{
+	let cmd = vscode.commands.registerCommand('npm-dependancy-graph.start', ()=>{
 		const panel = vscode.window.createWebviewPanel(
-			'catCoding', //webview identifier
-			'Cat Coding', //title
+			'npm-dependancy-graph', //webview identifier
+			'NPM Graph', //title
 			vscode.ViewColumn.One, //edit column to show wabpanel in
 			{
 				enableScripts: true,
