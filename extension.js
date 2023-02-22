@@ -15,9 +15,9 @@ const {TextEncoder } = require('util')
  */
 async function activate(context) {
 	// fetch workspace rootPath
-	const rootPath = vscode.workspace.workspaceFolders || ".";
-	const workspacePath = rootPath[0].uri._fsPath;
-	console.log(workspacePath);
+	const filePath = vscode.window.activeTextEditor.document.uri.fsPath
+	const cutoff = filePath.lastIndexOf('\\')
+	const workspacePath = filePath.substring(0, cutoff)
 	// run npm ls in workspace
 	const lsData = execSync("npm ls --all --json",{cwd: workspacePath}).toString();
 

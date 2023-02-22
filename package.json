@@ -16,9 +16,27 @@
       {
         "command": "npm-dependancy-graph.start",
         "title": "Visualize NPM Dependency Graph",
-        "category": "NPM Dependency Graph"
+        "category": "NPM Dependency Graph",
+        "icon": {
+          "light": "media/light.png",
+          "dark": "media/dark.png"
+        }
       }
-    ]
+    ],
+    "menus": {
+      "editor/title":[
+        {
+          "command": "npm-dependancy-graph.start",
+          "when": "resourceFilename == package-lock.json"
+        }
+      ],
+      "editor/context":[
+        {
+          "command": "npm-dependancy-graph.start",
+          "when": "resourceFilename == package-lock.json"
+        }
+      ]
+    }
   },
   "scripts": {
     "lint": "eslint .",
