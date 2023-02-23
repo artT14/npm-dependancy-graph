@@ -14,40 +14,27 @@ const {TextEncoder } = require('util')
  * @param {vscode.ExtensionContext} context
  */
 async function activate(context) {
-	// fetch workspace rootPath
 	const filePath = vscode.window.activeTextEditor.document.uri.fsPath
 	const cutoff = filePath.lastIndexOf('\\')
 	const workspacePath = filePath.substring(0, cutoff)
-	// run npm ls in workspace
 	const lsData = execSync("npm ls --all --json",{cwd: workspacePath}).toString();
 
-	// // record data in ls.json 
-	// const dir = vscode.Uri.joinPath(rootPath[0].uri,'.dependancy-graph', 'ls.json')
-	// await vscode.workspace.fs.writeFile(dir,new TextEncoder().encode(ls))
-
-	// can run np audit in same workspace
-	// const audit = execSync("npm audit --json",{cwd: rootPath[0].uri._fsPath}).toString();
-	// console.log(ls);
-
-
-
-	let cmd = vscode.commands.registerCommand('npm-dependancy-graph.start', ()=>{
+	let fullgraph = vscode.commands.registerCommand('npm-dependancy-graph.start', ()=>{
 		const panel = vscode.window.createWebviewPanel(
-			'npm-dependancy-graph', //webview identifier
-			'NPM Graph', //title
-			vscode.ViewColumn.One, //edit column to show wabpanel in
+			'npm-dependancy-graph',
+			'NPM Graph',
+			vscode.ViewColumn.One,
 			{
 				enableScripts: true,
 				retainContextWhenHidden: true
-			} //view options
+			}
 		);
-		// uri for graph.js
 		const forceGraphScript = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'forceGraph.js'));
 		panel.webview.postMessage({command:"lsJsonData", data:lsData});
 		panel.webview.html = getWebviewContent(forceGraphScript);
 	});
 
-	context.subscriptions.push(cmd);
+	context.subscriptions.push(fullgraph);
 }
 
 function getWebviewContent(forceGraphScript) {

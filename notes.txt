@@ -10,7 +10,8 @@ For Graph Data Parsing:
 - npm audit --json --all
 
 
-
+TODO:
+1) Create a command that parses package-lock.json instead
 
 
 ADDITIONAL FEATURES:
