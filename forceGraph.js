@@ -177,6 +177,7 @@ function drawInteractiveTree(graphData, rootId){
 		return { nodes: visibleNodes, links: visibleLinks };
 	};
 
+	let clickedNode = null
 	const elem = document.getElementById('graph');
 	const Graph = ForceGraph()(elem)
 		.linkColor(() => 'rgba(255,255,255,0.1)')
@@ -189,22 +190,32 @@ function drawInteractiveTree(graphData, rootId){
 				Graph.graphData(getPrunedTree());
 			}
 		})
-		.nodeColor(node => !node.childLinks.length ? 'green' : node.collapsed ? 'red' : 'yellow')
+        .nodeCanvasObject((node, ctx, globalScale) => {
+			const label = node.name + (!node.childLinks.length ? '' : node.collapsed ? ' [ + ]' : ' [ - ]');
+			const fontSize = 12/globalScale;
+			ctx.font = `${fontSize}px Sans-Serif`;
+			const textWidth = ctx.measureText(label).width;
+			const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2); // some padding
+			ctx.fillStyle = 'rgb(0, 0, 0)';
+			ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
+			ctx.textAlign = 'center';
+			ctx.textBaseline = 'middle';
+			ctx.fillStyle = node.color;
+			ctx.fillText(label, node.x, node.y);
+			node.__bckgDimensions = bckgDimensions; // to re-use in nodePointerAreaPaint
+			node.color = !node.childLinks.length ? 'green' : node.collapsed ? 'red' : 'orange';
+		})
+		.nodePointerAreaPaint((node, color, ctx) => {
+			ctx.fillStyle = color;
+			const bckgDimensions = node.__bckgDimensions;
+			bckgDimensions && ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
+		})
 		.enableNodeDrag(false)
 		.cooldownTicks(250);
 	
-	Graph.d3Force('center', null);
+	// Graph.d3Force('center', null);
 
-	// fit to canvas when engine stops
-	Graph.onEngineStop(() => Graph.zoomToFit(400));
-
-	// const Graph = ForceGraph()
-	// 	(document.getElementById('graph'))
-	// 	.graphData(graphData)
-	// 	.linkColor(() => 'rgba(255,255,255,0.1)')
-	// 	.nodeAutoColorBy('layer')
-	// 	.nodeCanvasObject((node, ctx) => nodePaint(node, ctx))
-	// 	.linkCurvature('curvature')
-	// 	.linkDirectionalParticles(1)
+	// // fit to canvas when engine stops
+	// Graph.onEngineStop(() => Graph.zoomToFit(400));
 	
 }

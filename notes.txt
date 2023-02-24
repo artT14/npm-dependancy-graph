@@ -1,23 +1,10 @@
-Foundation:
-- Vanilla HTML + JS
-- WebViews API - https://code.visualstudio.com/api/extension-guides/webview
-
-For Graph Visualization:
-- https://code.tutsplus.com/articles/best-free-javascript-graph-visualization-libraries--cms-41710
-
-For Graph Data Parsing:
-- npm ls --json --all 
-- npm audit --json --all
-
-
 TODO:
-1) Create a command that parses package-lock.json instead
-
+- handle error when 'npm ls' does not work
 
 ADDITIONAL FEATURES:
-- hide some nodes, since there are alot then let user expand them
-- color it make it look nice
 - refactor code
+- center the camera on clicked node when expanding tree
+- add ability to audit vulnerabilities and record them in graph, display it using appropriate colors (can add a seperate option)
 
 IDEAS:
 ? instead of always generating graph data, use packagelock.json instead
@@ -26,4 +13,5 @@ IDEAS:
 
 BUGS:
 - workspace must have all npm packages installed in order to run 'npm-ls'
-    POS SOL-> might resort to giving 2 options => 1 to view full graph and one to view package-lock.json tree
+    SOLUTION: make user install packages since package-lock.json is not a reliable source of info as different versions of npm
+              append their own key:value pairs
