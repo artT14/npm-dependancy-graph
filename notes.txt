@@ -10,3 +10,6 @@ IDEAS:
 
 TODO:
 - refactor code
+
+PET-PEEVES:
+- change the direction of the particles
