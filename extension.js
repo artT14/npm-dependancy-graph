@@ -33,10 +33,15 @@ function activate(context) {
 			vscode.ViewColumn.One,
 			{
 				enableScripts: true,
-				retainContextWhenHidden: true
+				retainContextWhenHidden: true,
+
 			}
 		);
 		const forceGraphScript = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'forceGraph.js'));
+		panel.iconPath = {
+			dark: vscode.Uri.joinPath(context.extensionUri, "media", "dark.png"),
+			ligth: vscode.Uri.joinPath(context.extensionUri, "media", "light.png")
+		}
 		panel.webview.postMessage({command:"fullGraph", data:lsData});
 		panel.webview.html = getWebviewContent(forceGraphScript);
 	});
@@ -62,6 +67,10 @@ function activate(context) {
 			}
 		);
 		const forceGraphScript = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'forceGraph.js'));
+		panel.iconPath = {
+			dark: vscode.Uri.joinPath(context.extensionUri, "media", "dark.png"),
+			ligth: vscode.Uri.joinPath(context.extensionUri, "media", "light.png")
+		}
 		panel.webview.postMessage({command:"expandableTree", data:lsData});
 		panel.webview.html = getWebviewContent(forceGraphScript);
 	});
