@@ -2,7 +2,7 @@ ADDITIONAL FEATURES:
 - refactor code
 - center the camera on clicked node when expanding tree
 - add ability to audit vulnerabilities and record them in graph, display it using appropriate colors (can add a seperate option)
-- add loading animation
+
 
 IDEAS:
 ? instead of always generating graph data, use packagelock.json instead

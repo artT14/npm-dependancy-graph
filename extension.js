@@ -2,9 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 // const {series} = require('async');
-const {execSync} = require('child_process');
-const {TextEncoder } = require('util')
+const {exec} = require('child_process');
+const {promisify } = require('util')
 
+const execute = promisify(exec); 
 
 
 // This method is called when your extension is activated
@@ -14,8 +15,17 @@ const {TextEncoder } = require('util')
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-	let fullgraph = vscode.commands.registerCommand('npm-dependancy-graph.full-graph', ()=>{
-		const lsData = getNpmData();
+	let fullgraph = vscode.commands.registerCommand('npm-dependancy-graph.full-graph', async ()=>{
+		const lsData = await vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'Loading NPM Data'
+		}, async (progress) => {
+			progress.report({  increment: 0 });
+			const lsData = await getNpmData();
+			progress.report({ increment: 100 });
+			return lsData;
+		});
 		if (!lsData) return;
 		const panel = vscode.window.createWebviewPanel(
 			'npm-dependancy-graph',
@@ -30,8 +40,17 @@ function activate(context) {
 		panel.webview.postMessage({command:"fullGraph", data:lsData});
 		panel.webview.html = getWebviewContent(forceGraphScript);
 	});
-	let expandabletree = vscode.commands.registerCommand('npm-dependancy-graph.expandable-tree', ()=>{
-		const lsData = getNpmData();
+	let expandabletree = vscode.commands.registerCommand('npm-dependancy-graph.expandable-tree', async ()=>{
+		const lsData = await vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'Loading NPM Data'
+		}, async (progress) => {
+			progress.report({  increment: 0 });
+			const lsData = await getNpmData();
+			progress.report({ increment: 100 });
+			return lsData;
+		});
 		if (!lsData) return;
 		const panel = vscode.window.createWebviewPanel(
 			'npm-dependancy-graph',
@@ -51,23 +70,21 @@ function activate(context) {
 	context.subscriptions.push(expandabletree);
 }
 
-function getNpmData(){
+async function getNpmData(){
 	const file = vscode.window.activeTextEditor.document;
 	const filePath = file.uri.fsPath;
 	const cutoff = filePath.lastIndexOf(process.platform==="win32" ? '\\' : '/');
 	const workspacePath = filePath.substring(0, cutoff);
-	let lsData;
-	try{
-		const ls = execSync("npm ls --all --json",{cwd: workspacePath});
-		lsData = ls.toString();
-	}catch(e){
-		const err = e.stderr.toString();
-		if (err.includes("ELSPROBLEMS")){
-			vscode.window.showErrorMessage("Some npm packages are missing for this project, cannot display graph");
-			vscode.window.showInformationMessage('Run "npm i" in project directory to install packages');
-		}
-		lsData = "";
-	}
+	let lsData = "";
+	await execute("npm ls --all --json",{cwd: workspacePath})
+		.then((data)=>{lsData = data.stdout})
+		.catch((e)=>{
+			const err = e.stderr.toString();
+			if (err.includes("ELSPROBLEMS")){
+				vscode.window.showErrorMessage("Some npm packages are missing for this project, cannot display graph");
+				vscode.window.showInformationMessage('Run "npm i" in project directory to install packages');
+			}
+		})
 	return lsData;
 }
 
