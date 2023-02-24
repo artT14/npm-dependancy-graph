@@ -1,5 +1,4 @@
 ADDITIONAL FEATURES:
-- refactor code
 - center the camera on clicked node when expanding tree
 - add ability to audit vulnerabilities and record them in graph, display it using appropriate colors (can add a seperate option)
 
@@ -8,3 +7,6 @@ IDEAS:
 ? instead of always generating graph data, use packagelock.json instead
 ? add a feature for python projects
 ? add a feature for ruby projects
+
+TODO:
+- refactor code
