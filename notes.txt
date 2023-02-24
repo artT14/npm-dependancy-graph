@@ -1,6 +1,3 @@
-TODO:
-- handle error when 'npm ls' does not work
-
 ADDITIONAL FEATURES:
 - refactor code
 - center the camera on clicked node when expanding tree
@@ -11,6 +8,3 @@ IDEAS:
 ? instead of always generating graph data, use packagelock.json instead
 ? add a feature for python projects
 ? add a feature for ruby projects
-
-BUGS:
-- allow the extension to reactivate when error is handled

@@ -13,24 +13,10 @@ const {TextEncoder } = require('util')
 /**
  * @param {vscode.ExtensionContext} context
  */
-async function activate(context) {
-	const file = vscode.window.activeTextEditor.document
-	const filePath = file.uri.fsPath
-	const cutoff = filePath.lastIndexOf(process.platform==="win32" ? '\\' : '/') 
-	const workspacePath = filePath.substring(0, cutoff)
-	let ls;
-	try{
-		ls = execSync("npm ls --all --json",{cwd: workspacePath})
-	}catch(e){
-		const err = e.stderr.toString()
-		if (err.includes("ELSPROBLEMS")){
-			vscode.window.showErrorMessage("Some npm packages are missing for this project, cannot display graph")
-			vscode.window.showInformationMessage('Run "npm i" in project directory to install packages')
-		}
-		deactivate()
-	}
-	const lsData = ls.toString();
+function activate(context) {
 	let fullgraph = vscode.commands.registerCommand('npm-dependancy-graph.full-graph', ()=>{
+		const lsData = getNpmData();
+		if (!lsData) return;
 		const panel = vscode.window.createWebviewPanel(
 			'npm-dependancy-graph',
 			'NPM Graph',
@@ -45,6 +31,8 @@ async function activate(context) {
 		panel.webview.html = getWebviewContent(forceGraphScript);
 	});
 	let expandabletree = vscode.commands.registerCommand('npm-dependancy-graph.expandable-tree', ()=>{
+		const lsData = getNpmData();
+		if (!lsData) return;
 		const panel = vscode.window.createWebviewPanel(
 			'npm-dependancy-graph',
 			'NPM Expandable Tree',
@@ -61,8 +49,26 @@ async function activate(context) {
 
 	context.subscriptions.push(fullgraph);
 	context.subscriptions.push(expandabletree);
+}
 
-
+function getNpmData(){
+	const file = vscode.window.activeTextEditor.document;
+	const filePath = file.uri.fsPath;
+	const cutoff = filePath.lastIndexOf(process.platform==="win32" ? '\\' : '/');
+	const workspacePath = filePath.substring(0, cutoff);
+	let lsData;
+	try{
+		const ls = execSync("npm ls --all --json",{cwd: workspacePath});
+		lsData = ls.toString();
+	}catch(e){
+		const err = e.stderr.toString();
+		if (err.includes("ELSPROBLEMS")){
+			vscode.window.showErrorMessage("Some npm packages are missing for this project, cannot display graph");
+			vscode.window.showInformationMessage('Run "npm i" in project directory to install packages');
+		}
+		lsData = "";
+	}
+	return lsData;
 }
 
 function getWebviewContent(forceGraphScript) {
