@@ -14,12 +14,13 @@ const {TextEncoder } = require('util')
  * @param {vscode.ExtensionContext} context
  */
 async function activate(context) {
-	const filePath = vscode.window.activeTextEditor.document.uri.fsPath
+	const file = vscode.window.activeTextEditor.document
+	const filePath = file.uri.fsPath
 	const cutoff = filePath.lastIndexOf('\\')
 	const workspacePath = filePath.substring(0, cutoff)
 	const lsData = execSync("npm ls --all --json",{cwd: workspacePath}).toString();
 
-	let fullgraph = vscode.commands.registerCommand('npm-dependancy-graph.start', ()=>{
+	let fullgraph = vscode.commands.registerCommand('npm-dependancy-graph.full-graph', ()=>{
 		const panel = vscode.window.createWebviewPanel(
 			'npm-dependancy-graph',
 			'NPM Graph',
@@ -30,11 +31,27 @@ async function activate(context) {
 			}
 		);
 		const forceGraphScript = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'forceGraph.js'));
-		panel.webview.postMessage({command:"lsJsonData", data:lsData});
+		panel.webview.postMessage({command:"fullGraph", data:lsData});
+		panel.webview.html = getWebviewContent(forceGraphScript);
+	});
+
+	let expandabletree = vscode.commands.registerCommand('npm-dependancy-graph.expandable-tree', ()=>{
+		const panel = vscode.window.createWebviewPanel(
+			'npm-dependancy-graph',
+			'NPM Expandable Tree',
+			vscode.ViewColumn.One,
+			{
+				enableScripts: true,
+				retainContextWhenHidden: true
+			}
+		);
+		const forceGraphScript = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'forceGraph.js'));
+		panel.webview.postMessage({command:"expandableTree", data:lsData});
 		panel.webview.html = getWebviewContent(forceGraphScript);
 	});
 
 	context.subscriptions.push(fullgraph);
+	context.subscriptions.push(expandabletree);
 }
 
 function getWebviewContent(forceGraphScript) {

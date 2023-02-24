@@ -1,15 +1,24 @@
+////////////////////////////////////////////////////////////////
+// MESSAGE HANDLER & DISPATCH LOGIC
 document.addEventListener('DOMContentLoaded', function () {
 	window.addEventListener('message', event => {
 		const message = event.data; // The JSON data our extension sent
 		switch (message.command) {
-			case 'lsJsonData':
+			case 'fullGraph':{
 				const {graphData, rootId} = parseNpmGraph(message.data)
 				drawTree(graphData, rootId)
 				break;
+			}
+			case 'expandableTree':{
+				const {graphData, rootId} = parseNpmTree(message.data)
+				drawInteractiveTree(graphData, rootId)
+				break;
+			}
 		}
 	})
 })
-
+////////////////////////////////////////////////////////////////
+//PARSING FUNCTIONS
 function parseNpmGraph (string){
 	const graphData = {nodes: [],links: []} // graph object to be returned 
 	
@@ -57,13 +66,63 @@ function parseNpmGraph (string){
 	return {graphData, rootId: root};
 }
 
+function parseNpmTree (string){
+	const graphData = {nodes: [],links: []} // graph object to be returned 
+	
+	const dupes = {}; // set that keeps track of dupes
+	const tree = JSON.parse(string) //parse JSON string to JS object
+	const root = tree.name+tree.version; // keep track of root
+
+	function dfs(node, data, layer){ // dfs for traversing JSON tree
+		if (!data.dependencies) return;
+		Object.entries(data.dependencies)
+			.forEach(([key, val])=>{
+				const curr = key+val.version
+				const dependant = node+data.version
+				let duplicate = false
+				if (curr in dupes){
+					dupes[curr]++;
+					duplicate = true
+				}
+				else dupes[curr] = 1
+				graphData.nodes.push({
+					id: curr+dupes[curr],
+					name: curr,
+					duplicate,
+					layer,
+					collapsed: curr !== root,
+					childLinks: []
+				});
+				graphData.links.push({
+					source: dependant+dupes[dependant],
+					target: curr+dupes[curr],
+				})
+				dfs(key,val,layer+1);
+			})
+	}
+	// add root
+	dupes[root] = 1
+	graphData.nodes.push({
+		id: root+dupes[root],
+		name: root,
+		layer: 1,
+		collapsed: false,
+		childLinks: [] 
+	})
+	dfs(tree.name, tree, 2)
+
+	return {graphData, rootId: root+dupes[root]};
+}
+
+////////////////////////////////////////////////////////////////
+//RENDERING FUNCTIONS
 function drawTree(graphData, rootId){
 	console.log(graphData)
 	
 	function nodePaint( node, ctx) {
 		ctx.fillStyle = node.color;
 		//draw circle
-		const radius = Math.abs(10 / (1 + Math.log(node.layer)))
+		const radius = 20 / node.layer
 		ctx.beginPath(); 
 		ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false); 
 		ctx.fill();

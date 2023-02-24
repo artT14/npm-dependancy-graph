@@ -14,8 +14,17 @@
   "contributes": {
     "commands": [
       {
-        "command": "npm-dependancy-graph.start",
-        "title": "Visualize NPM Dependency Graph",
+        "command": "npm-dependancy-graph.full-graph",
+        "title": "Visualize Full NPM Dependency Graph",
+        "category": "NPM Dependency Graph",
+        "icon": {
+          "light": "media/light.png",
+          "dark": "media/dark.png"
+        }
+      },
+      {
+        "command": "npm-dependancy-graph.expandable-tree",
+        "title": "Visualize Expandable Package Dependency Tree",
         "category": "NPM Dependency Graph",
         "icon": {
           "light": "media/light.png",
@@ -26,13 +35,22 @@
     "menus": {
       "editor/title":[
         {
-          "command": "npm-dependancy-graph.start",
+          "command": "npm-dependancy-graph.full-graph",
+          "when": "resourceFilename == package-lock.json"
+        },
+        {
+          "command": "npm-dependancy-graph.expandable-tree",
           "when": "resourceFilename == package-lock.json"
         }
       ],
       "editor/context":[
         {
-          "command": "npm-dependancy-graph.start",
+          "command": "npm-dependancy-graph.full-graph",
+          "when": "resourceFilename == package-lock.json"
+        },
+        
+        {
+          "command": "npm-dependancy-graph.expandable-tree",
           "when": "resourceFilename == package-lock.json"
         }
       ]
