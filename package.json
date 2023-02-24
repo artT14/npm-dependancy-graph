@@ -24,7 +24,7 @@
       },
       {
         "command": "npm-dependancy-graph.expandable-tree",
-        "title": "Visualize Expandable Package Dependency Tree",
+        "title": "Visualize Expandable NPM Dependency Tree",
         "category": "NPM Dependency Graph",
         "icon": {
           "light": "media/light.png",
