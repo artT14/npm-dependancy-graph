@@ -5,6 +5,7 @@ ADDITIONAL FEATURES:
 - refactor code
 - center the camera on clicked node when expanding tree
 - add ability to audit vulnerabilities and record them in graph, display it using appropriate colors (can add a seperate option)
+- add loading animation
 
 IDEAS:
 ? instead of always generating graph data, use packagelock.json instead
@@ -12,6 +13,4 @@ IDEAS:
 ? add a feature for ruby projects
 
 BUGS:
-- workspace must have all npm packages installed in order to run 'npm-ls'
-    SOLUTION: make user install packages since package-lock.json is not a reliable source of info as different versions of npm
-              append their own key:value pairs
+- allow the extension to reactivate when error is handled

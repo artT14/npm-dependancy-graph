@@ -16,10 +16,20 @@ const {TextEncoder } = require('util')
 async function activate(context) {
 	const file = vscode.window.activeTextEditor.document
 	const filePath = file.uri.fsPath
-	const cutoff = filePath.lastIndexOf('\\')
+	const cutoff = filePath.lastIndexOf(process.platform==="win32" ? '\\' : '/') 
 	const workspacePath = filePath.substring(0, cutoff)
-	const lsData = execSync("npm ls --all --json",{cwd: workspacePath}).toString();
-
+	let ls;
+	try{
+		ls = execSync("npm ls --all --json",{cwd: workspacePath})
+	}catch(e){
+		const err = e.stderr.toString()
+		if (err.includes("ELSPROBLEMS")){
+			vscode.window.showErrorMessage("Some npm packages are missing for this project, cannot display graph")
+			vscode.window.showInformationMessage('Run "npm i" in project directory to install packages')
+		}
+		deactivate()
+	}
+	const lsData = ls.toString();
 	let fullgraph = vscode.commands.registerCommand('npm-dependancy-graph.full-graph', ()=>{
 		const panel = vscode.window.createWebviewPanel(
 			'npm-dependancy-graph',
@@ -34,7 +44,6 @@ async function activate(context) {
 		panel.webview.postMessage({command:"fullGraph", data:lsData});
 		panel.webview.html = getWebviewContent(forceGraphScript);
 	});
-
 	let expandabletree = vscode.commands.registerCommand('npm-dependancy-graph.expandable-tree', ()=>{
 		const panel = vscode.window.createWebviewPanel(
 			'npm-dependancy-graph',
@@ -52,6 +61,8 @@ async function activate(context) {
 
 	context.subscriptions.push(fullgraph);
 	context.subscriptions.push(expandabletree);
+
+
 }
 
 function getWebviewContent(forceGraphScript) {
@@ -72,7 +83,9 @@ function getWebviewContent(forceGraphScript) {
 }
 
 // This method is called when your extension is deactivated
-function deactivate() {}
+function deactivate() {
+	console.log("deactivating")
+}
 
 module.exports = {
 	activate,
