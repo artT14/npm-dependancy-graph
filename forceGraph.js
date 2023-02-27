@@ -182,6 +182,8 @@ function drawInteractiveTree(graphData, rootId){
 	const Graph = ForceGraph()(elem)
 		.linkColor(() => 'rgba(255,255,255,0.1)')
 		.linkDirectionalParticles(1)
+		.linkDirectionalParticleSpeed(0.001)
+		.linkDirectionalParticleWidth(2)
 		.graphData(getPrunedTree())
 		.onNodeHover(node => elem.style.cursor = node && node.childLinks.length ? 'pointer' : null)
 		.onNodeClick(node => {
