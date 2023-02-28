@@ -1,7 +1,5 @@
 ADDITIONAL FEATURES:
 - center the camera on clicked node when expanding tree
-- add ability to audit vulnerabilities and record them in graph, display it using appropriate colors (can add a seperate option)
-
 
 IDEAS:
 ? instead of always generating graph data, use packagelock.json instead
@@ -10,6 +8,9 @@ IDEAS:
 
 TODO:
 - refactor code
+- display vulnerability data
+- write documentation for user
+- write documnetation for dev
 
 PET-PEEVES:
 - change the direction of the particles
