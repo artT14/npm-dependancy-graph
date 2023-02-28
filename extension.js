@@ -93,7 +93,6 @@ function activate(context) {
 			progress.report({ increment: 100 });
 			return {lsData,vulnData};
 		});
-		console.log(vulnData)
 		if (!lsData || !vulnData) return;
 		const panel = vscode.window.createWebviewPanel(
 			'npm-dependancy-graph',
@@ -143,13 +142,14 @@ async function getVulnerabilityData(){
 	const workspacePath = filePath.substring(0, cutoff);
 	let vulnData = "";
 	await execute("npm audit --json",{cwd: workspacePath})
-		.then((data)=>{console.log(data.stdout);vulnData = data.stdout})
+		.then((data)=>{vulnData = data.stdout})
 		.catch((e)=>{
 			const err = e.stderr.toString();
 			if (err.includes("ELSPROBLEMS")){
 				vscode.window.showErrorMessage("Some npm packages are missing for this project, cannot display graph");
 				vscode.window.showInformationMessage('Run "npm i" in project directory to install packages');
 			}
+			if (e.stdout) vulnData = e.stdout
 		})
 	return vulnData;
 }

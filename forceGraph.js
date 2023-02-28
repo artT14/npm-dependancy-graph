@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			}
 			case 'vulnerabilities':{
 				const {data,vulnData} = message
-				console.log(data,vulnData)
+				const vulnObj = JSON.parse(vulnData)
+				console.log(data,vulnObj)
 				const {graphData, rootId} = parseNpmGraph(message.data)
 				drawTree(graphData, rootId)
 			}
