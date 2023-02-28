@@ -19,7 +19,7 @@ function activate(context) {
 		const lsData = await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
 			cancellable: false,
-			title: 'Loading NPM Data'
+			title: 'NPM Full Graph'
 		}, async (progress) => {
 			progress.report({  increment: 0 });
 			const lsData = await getNpmData();
@@ -49,7 +49,7 @@ function activate(context) {
 		const lsData = await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
 			cancellable: false,
-			title: 'Loading NPM Data'
+			title: 'NPM Expandable Tree'
 		}, async (progress) => {
 			progress.report({  increment: 0 });
 			const lsData = await getNpmData();
@@ -74,9 +74,48 @@ function activate(context) {
 		panel.webview.postMessage({command:"expandableTree", data:lsData});
 		panel.webview.html = getWebviewContent(forceGraphScript);
 	});
+	let vulnerabilities = vscode.commands.registerCommand('npm-dependancy-graph.vulnerabilities', async ()=>{
+		const {lsData,vulnData} = await vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'NPM Vulnerabilities'
+		}, async (progress) => {
+			progress.report({  
+				increment: 0,
+				message: "Loading package data"
+			});
+			const lsData = await getNpmData(); 
+			progress.report({  
+				increment: 50,
+				message: "Loading vulnerability data"
+			});
+			const vulnData = await getVulnerabilityData();
+			progress.report({ increment: 100 });
+			return {lsData,vulnData};
+		});
+		console.log(vulnData)
+		if (!lsData || !vulnData) return;
+		const panel = vscode.window.createWebviewPanel(
+			'npm-dependancy-graph',
+			'NPM Vulnerabilities',
+			vscode.ViewColumn.One,
+			{
+				enableScripts: true,
+				retainContextWhenHidden: true
+			}
+		);
+		const forceGraphScript = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'forceGraph.js'));
+		panel.iconPath = {
+			dark: vscode.Uri.joinPath(context.extensionUri, "media", "dark.png"),
+			ligth: vscode.Uri.joinPath(context.extensionUri, "media", "light.png")
+		}
+		panel.webview.postMessage({command:"vulnerabilities", data: lsData, vulnData});
+		panel.webview.html = getWebviewContent(forceGraphScript);
+	});
 
 	context.subscriptions.push(fullgraph);
 	context.subscriptions.push(expandabletree);
+	context.subscriptions.push(vulnerabilities);
 }
 
 async function getNpmData(){
@@ -95,6 +134,24 @@ async function getNpmData(){
 			}
 		})
 	return lsData;
+}
+
+async function getVulnerabilityData(){
+	const file = vscode.window.activeTextEditor.document;
+	const filePath = file.uri.fsPath;
+	const cutoff = filePath.lastIndexOf(process.platform==="win32" ? '\\' : '/');
+	const workspacePath = filePath.substring(0, cutoff);
+	let vulnData = "";
+	await execute("npm audit --json",{cwd: workspacePath})
+		.then((data)=>{console.log(data.stdout);vulnData = data.stdout})
+		.catch((e)=>{
+			const err = e.stderr.toString();
+			if (err.includes("ELSPROBLEMS")){
+				vscode.window.showErrorMessage("Some npm packages are missing for this project, cannot display graph");
+				vscode.window.showInformationMessage('Run "npm i" in project directory to install packages');
+			}
+		})
+	return vulnData;
 }
 
 function getWebviewContent(forceGraphScript) {

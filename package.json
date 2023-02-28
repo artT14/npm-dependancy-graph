@@ -30,6 +30,15 @@
           "light": "./media/light.png",
           "dark": "./media/dark.png"
         }
+      },
+      {
+        "command": "npm-dependancy-graph.vulnerabilities",
+        "title": "Visualize NPM Vulnerabilities",
+        "category": "NPM Dependency Graph",
+        "icon": {
+          "light": "./media/light.png",
+          "dark": "./media/dark.png"
+        }
       }
     ],
     "menus": {
@@ -41,6 +50,10 @@
         {
           "command": "npm-dependancy-graph.expandable-tree",
           "when": "resourceFilename == package-lock.json"
+        },
+        {
+          "command": "npm-dependancy-graph.vulnerabilities",
+          "when": "resourceFilename == package-lock.json"
         }
       ],
       "editor/context":[
@@ -48,9 +61,12 @@
           "command": "npm-dependancy-graph.full-graph",
           "when": "resourceFilename == package-lock.json"
         },
-        
         {
           "command": "npm-dependancy-graph.expandable-tree",
+          "when": "resourceFilename == package-lock.json"
+        },
+        {
+          "command": "npm-dependancy-graph.vulnerabilities",
           "when": "resourceFilename == package-lock.json"
         }
       ]

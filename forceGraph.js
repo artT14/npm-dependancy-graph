@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
 				drawInteractiveTree(graphData, rootId)
 				break;
 			}
+			case 'vulnerabilities':{
+				const {data,vulnData} = message
+				console.log(data,vulnData)
+				const {graphData, rootId} = parseNpmGraph(message.data)
+				drawTree(graphData, rootId)
+			}
 		}
 	})
 })
