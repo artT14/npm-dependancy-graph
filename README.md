@@ -1,6 +1,8 @@
 # npm-dependancy-graph README
 
-This extension allows developers who use npm to visualize the dependencies of their npm project and the vulnerabilities that haunt it. 
+This extension allows developers who use npm to visualize the dependencies of their npm project and the vulnerabilities that haunt it.
+
+Link to Extension Marketplace: https://marketplace.visualstudio.com/items?itemName=ArtT14.npm-dependancy-graph
 
 ## Features
 
@@ -51,7 +53,7 @@ This extension does not expose any settings yet but it may in the future.
 
 ## Release Notes
 
-### 1.0.0
+### 0.0.1
 
 Initial release of npm-dependancy-graph
 
