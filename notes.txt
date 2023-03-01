@@ -1,16 +1,12 @@
-ADDITIONAL FEATURES:
-- center the camera on clicked node when expanding tree
-
-IDEAS:
-? instead of always generating graph data, use packagelock.json instead
-? add a feature for python projects
-? add a feature for ruby projects
-
 TODO:
-- refactor code
-- display vulnerability data
 - write documentation for user
 - write documnetation for dev
 
 PET-PEEVES:
 - change the direction of the particles
+
+POSSIBLE ADDITIONAL FEATURES:
+- center the camera on clicked node when expanding tree
+
+POSSIBLE BUGS:
+- vulnerability graph may display vulnerability for a version of a package that has patched the vulnerability, include a version comparator
