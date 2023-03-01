@@ -2,7 +2,7 @@
   "name": "npm-dependancy-graph",
   "displayName": "npm dependancy graph",
   "description": "Visualize the dependancy graph of your project with a click of a button, explore vulnerabilities",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.75.0"
   },

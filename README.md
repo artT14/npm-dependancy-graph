@@ -53,6 +53,10 @@ This extension does not expose any settings yet but it may in the future.
 
 ## Release Notes
 
+### 0.0.2
+
+Fix Typos
+
 ### 0.0.1
 
 Initial release of npm-dependancy-graph
