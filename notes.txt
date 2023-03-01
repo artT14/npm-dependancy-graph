@@ -1,5 +1,4 @@
 TODO:
-- write documentation for user
 - write documnetation for dev
 
 PET-PEEVES:

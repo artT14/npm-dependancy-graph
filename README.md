@@ -1,65 +1,64 @@
 # npm-dependancy-graph README
 
-This is the README for your extension "npm-dependancy-graph". After writing up a brief description, we recommend including the following sections.
+This extension allows developers who use npm to visualize the dependencies of their npm project and the vulnerabilities that haunt it. 
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+---
 
-For example if there is an image subfolder under your extension project workspace:
+### **Display Full Dependency Graph**
 
-\!\[feature X\]\(images/feature-x.png\)
+![Full Dependency Graph](images/FullGraph.gif)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+> This feature allows the user to see the whole dependency graph of their project. It displays all connections and does not contain duplicates.
 
-## Requirements
+> Access it through the editor context menu or title menu via either `package.json` or `package-lock.json`. Menu Option should be `"Visualize Full NPM Dependency Graph"`.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+### **Display Expandable Dependency Tree**
 
-## Extension Settings
+![Expandable Dependency Tree](images/ExpandableTree.gif)
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+> This feature allows the user to expand and visualize the dependency tree as they please. It is in DAG form so it does contain duplicates. *Note: This is done for the sake of removing complexity*
 
-For example:
+> Access it through the editor context menu or title menu via either `package.json` or `package-lock.json`. Menu Option should be `"Visualize Expandable NPM Dependency Tree"`.
 
-This extension contributes the following settings:
+### **Display Full Vulnerability Graph**
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+![Alt text](images/VulnerabilityGraph.gif)
 
-## Known Issues
+> This feature allows the user to see the whole dependency graph of their project with color coded values that show vulnerability levels. 
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+> Access it through the editor context menu or title menu via either `package.json` or `package-lock.json`. Menu Option should be `"Visualize NPM Vulnerabilities"`.
 
 ---
 
-## Working with Markdown
+## Requirements
 
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
+* You must have node installed. https://nodejs.org/en/download
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
+* You must have all node modules of your project installed in order to display the graphs. Run `npm i` in your project directory to install the dependencies and display them. The extension will warn you if you do not have them installed.
 
-## For more information
+* To access the menus shown in the demos, you may only do so through either `package.json` or `package-lock.json`.
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+## Extension Settings
 
-**Enjoy!**
+This extension does not expose any settings yet but it may in the future.
+
+## Known Issues
+
+* When visualizing vulnerabilities, your program may contain multiple instances of the same package in different versions. The graph may indicate a vulnerability on a version of a package that has since patched the vulnerability but another package is using an old vulnerable version of the afformentiond package. 
+* The graph links might be hard to visualize on light-mode editors as the links are colored white by default.
+
+## Release Notes
+
+### 1.0.0
+
+Initial release of npm-dependancy-graph
+
+---
+
+## Dev TODO List:
+* Fix known issues
+* Refactor code
+* Improve performance
+* Improve GUI
