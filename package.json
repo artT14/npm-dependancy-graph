@@ -12,6 +12,7 @@
   "activationEvents": [],
   "main": "./src/extension.js",
   "repository": "https://github.com/artT14/npm-dependancy-graph",
+  "publisher": "ArtT14",
   "contributes": {
     "commands": [
       {
