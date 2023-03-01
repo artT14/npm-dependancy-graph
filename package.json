@@ -45,29 +45,29 @@
       "editor/title":[
         {
           "command": "npm-dependancy-graph.full-graph",
-          "when": "resourceFilename == package-lock.json"
+          "when": "resourceFilename == package-lock.json || resourceFilename == package.json"
         },
         {
           "command": "npm-dependancy-graph.expandable-tree",
-          "when": "resourceFilename == package-lock.json"
+          "when": "resourceFilename == package-lock.json || resourceFilename == package.json"
         },
         {
           "command": "npm-dependancy-graph.vulnerabilities",
-          "when": "resourceFilename == package-lock.json"
+          "when": "resourceFilename == package-lock.json || resourceFilename == package.json"
         }
       ],
       "editor/context":[
         {
           "command": "npm-dependancy-graph.full-graph",
-          "when": "resourceFilename == package-lock.json"
+          "when": "resourceFilename == package-lock.json || resourceFilename == package.json"
         },
         {
           "command": "npm-dependancy-graph.expandable-tree",
-          "when": "resourceFilename == package-lock.json"
+          "when": "resourceFilename == package-lock.json || resourceFilename == package.json"
         },
         {
           "command": "npm-dependancy-graph.vulnerabilities",
-          "when": "resourceFilename == package-lock.json"
+          "when": "resourceFilename == package-lock.json || resourceFilename == package.json"
         }
       ]
     }
