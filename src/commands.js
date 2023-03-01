@@ -16,10 +16,10 @@ async function npmFullGraph(context){
         });
     if (!lsData) return;
     const panel = createWebviewPanel({title:'NPM Full Graph'})
-    const forceGraphScript = getForceGraphScript(panel,context);
+    const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
     panel.webview.postMessage({command:"fullGraph", data:lsData});
-    panel.webview.html = getWebviewContent(forceGraphScript);
+    panel.webview.html = getWebviewContent(scripts);
 }
 
 // "command": "npm-dependancy-graph.expandable-tree"
@@ -31,10 +31,10 @@ async function npmExpandableTree(context){
         });
     if (!lsData) return;
     const panel = createWebviewPanel({title:'NPM Expandable Tree'})
-    const forceGraphScript = getForceGraphScript(panel,context);
+    const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
     panel.webview.postMessage({command:"expandableTree", data:lsData});
-    panel.webview.html = getWebviewContent(forceGraphScript);
+    panel.webview.html = getWebviewContent(scripts);
 }
 
 // "command": "npm-dependancy-graph.vulnerabilities"
@@ -51,10 +51,10 @@ async function npmVulnerabilities(context){
         });
     if (!lsData || !vulnData) return;
     const panel = createWebviewPanel({title:'NPM Vulnerabilities'})
-    const forceGraphScript = getForceGraphScript(panel,context);
+    const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
     panel.webview.postMessage({command:"vulnerabilities", data: lsData, vulnData});
-    panel.webview.html = getWebviewContent(forceGraphScript);
+    panel.webview.html = getWebviewContent(scripts);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -92,8 +92,10 @@ function createWebviewPanel({title}){
     );
 }
 
-function getForceGraphScript(panel,context){
-    return panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri,'src', 'forceGraph.js'));
+function getScripts(panel,context){
+    return [
+        panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri,'src', 'client', 'graph.js')),
+    ]
 }
 
 function getIconPath(context){

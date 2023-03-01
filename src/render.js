@@ -1,4 +1,4 @@
-function getWebviewContent(forceGraphScript) {
+function getWebviewContent(scripts) {
 	return `<!DOCTYPE html>
 		<html lang="en">
 		<head>
@@ -9,10 +9,17 @@ function getWebviewContent(forceGraphScript) {
 		
 		<body>
 			<div id="graph"></div>
-			<script src="${forceGraphScript}">
-			</script>
+			${generateScriptTags(scripts)}
 		</body>
 	</html>`;
+}
+
+function generateScriptTags(scripts){
+	return scripts.reduce(
+		(accumulator,curr)=> accumulator + `<script src="${curr}" type="module"></script>
+`,
+		""
+		)
 }
 
 module.exports = {

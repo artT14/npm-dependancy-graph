@@ -1,5 +1,6 @@
 ////////////////////////////////////////////////////////////////
 // MESSAGE HANDLER & DISPATCH LOGIC
+////////////////////////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', function () {
 	window.addEventListener('message', event => {
 		const message = event.data; // The JSON data our extension sent
@@ -19,30 +20,33 @@ document.addEventListener('DOMContentLoaded', function () {
 				const vulnObj = JSON.parse(vulnData)
 				console.log(data,vulnObj)
 				const {graphData, rootId} = parseNpmGraph(message.data)
-				drawTree(graphData, rootId)
+				drawVulnerabilityTree(graphData, vulnObj)
 			}
 		}
 	})
 })
+
 ////////////////////////////////////////////////////////////////
 //PARSING FUNCTIONS
+////////////////////////////////////////////////////////////////
 function parseNpmGraph (string){
 	const graphData = {nodes: [],links: []} // graph object to be returned 
 	
 	const hash = new Set(); // set that keeps track of dupes
 	const tree = JSON.parse(string) //parse JSON string to JS object
-	const root = tree.name+tree.version; // keep track of root
+	const root = tree.name+"^"+tree.version; // keep track of root
 
 	function dfs(node, data, layer){ // dfs for traversing JSON tree
 		if (!data.dependencies) return;
 		Object.entries(data.dependencies)
 			.forEach(([key, val])=>{
-				const curr = key+val.version
-				const dependant = node+data.version
+				const curr = key+"^"+val.version
+				const dependant = node+"^"+data.version
 				if(!hash.has(curr)){
 					graphData.nodes.push({
 						id: curr,
-						name: curr,
+						name: key,
+						version: val.version,
 						layer,
 						collapsed: curr !== root,
 						childLinks: [] 
@@ -62,7 +66,8 @@ function parseNpmGraph (string){
 	// add root
 	graphData.nodes.push({
 		id: root,
-		name: root,
+		name: tree.name,
+		version: tree.version,
 		layer: 1,
 		collapsed: false,
 		childLinks: [] 
@@ -78,14 +83,14 @@ function parseNpmTree (string){
 	
 	const dupes = {}; // set that keeps track of dupes
 	const tree = JSON.parse(string) //parse JSON string to JS object
-	const root = tree.name+tree.version; // keep track of root
+	const root = tree.name+"^"+tree.version; // keep track of root
 
 	function dfs(node, data, layer){ // dfs for traversing JSON tree
 		if (!data.dependencies) return;
 		Object.entries(data.dependencies)
 			.forEach(([key, val])=>{
-				const curr = key+val.version
-				const dependant = node+data.version
+				const curr = key+"^"+val.version
+				const dependant = node+"^"+data.version
 				let duplicate = false
 				if (curr in dupes){
 					dupes[curr]++;
@@ -94,7 +99,8 @@ function parseNpmTree (string){
 				else dupes[curr] = 1
 				graphData.nodes.push({
 					id: curr+dupes[curr],
-					name: curr,
+					name: key,
+					version: val.version,
 					duplicate,
 					layer,
 					collapsed: curr !== root,
@@ -110,8 +116,9 @@ function parseNpmTree (string){
 	// add root
 	dupes[root] = 1
 	graphData.nodes.push({
-		id: root+dupes[root],
-		name: root,
+		id: root+dupes[root],		
+		name: tree.name,
+		version: tree.version,
 		layer: 1,
 		collapsed: false,
 		childLinks: [] 
@@ -123,6 +130,9 @@ function parseNpmTree (string){
 
 ////////////////////////////////////////////////////////////////
 //RENDERING FUNCTIONS
+////////////////////////////////////////////////////////////////
+
+// Draw Full Graph
 function drawTree(graphData, rootId){
 	console.log(graphData)
 	
@@ -139,18 +149,21 @@ function drawTree(graphData, rootId){
 	const Graph = ForceGraph()(elem)
 		.graphData(graphData)
 		.linkColor(() => 'rgba(255,255,255,0.1)')
+		.nodeLabel((node)=>node.name+"^"+node.version)
 		.nodeAutoColorBy('layer')
 		.nodeCanvasObject((node, ctx) => nodePaint(node, ctx))
 		.linkCurvature('curvature')
 		.linkDirectionalParticles(1)
+		.linkDirectionalParticleSpeed(0.001)
+		.linkDirectionalParticleWidth(2)
 
-	Graph.d3Force('center', null);
+	// Graph.d3Force('center', null);
 
 	// fit to canvas when engine stops
-	Graph.onEngineStop(() => Graph.zoomToFit(400));
-
+	// Graph.onEngineStop(() => Graph.zoomToFit(400));
 }
 
+// Draw Expandable Tree
 function drawInteractiveTree(graphData, rootId){
 	console.log(graphData)
 
@@ -200,7 +213,7 @@ function drawInteractiveTree(graphData, rootId){
 			}
 		})
         .nodeCanvasObject((node, ctx, globalScale) => {
-			const label = node.name + (!node.childLinks.length ? '' : node.collapsed ? ' [ + ]' : ' [ - ]');
+			const label = node.name + "^" + node.version + (!node.childLinks.length ? '' : node.collapsed ? ' [ + ]' : ' [ - ]');
 			const fontSize = 12/globalScale;
 			ctx.font = `${fontSize}px Sans-Serif`;
 			const textWidth = ctx.measureText(label).width;
@@ -227,4 +240,51 @@ function drawInteractiveTree(graphData, rootId){
 	// // fit to canvas when engine stops
 	// Graph.onEngineStop(() => Graph.zoomToFit(400));
 	
+}
+
+// Draw Full Vulnerability Graph
+function drawVulnerabilityTree(graphData, audit){
+	function getVulnerabilityPaint(node){
+		if (audit.vulnerabilities.hasOwnProperty(node.name)){
+			switch (audit.vulnerabilities[node.name].severity){
+				case 'low':
+					return 'yellow';
+					break;
+				case 'medium':
+					return 'orange';
+					break;
+				case 'high':
+					return 'red';
+					break;
+				case 'critical':
+					return 'purple';
+					break;
+			}
+		}
+		return 'green';
+	}
+	function nodePaint( node, ctx) {
+		ctx.fillStyle = getVulnerabilityPaint(node);
+		//draw circle
+		const radius = 20 / node.layer
+		ctx.beginPath(); 
+		ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI, false); 
+		ctx.fill();
+	}
+
+	const elem = document.getElementById('graph');
+	const Graph = ForceGraph()(elem)
+		.graphData(graphData)
+		.linkColor(() => 'rgba(255,255,255,0.1)')
+		.nodeLabel((node)=>node.name+"^"+node.version)
+		.nodeCanvasObject((node, ctx) => nodePaint(node, ctx))
+		.linkCurvature('curvature')
+		.linkDirectionalParticles(1)
+		.linkDirectionalParticleSpeed(0.001)
+		.linkDirectionalParticleWidth(2)
+
+	// Graph.d3Force('center', null);
+
+	// fit to canvas when engine stops
+	// Graph.onEngineStop(() => Graph.zoomToFit(400));
 }
