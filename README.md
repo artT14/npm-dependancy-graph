@@ -53,6 +53,10 @@ This extension does not expose any settings yet but it may in the future.
 
 ## Release Notes
 
+### 0.0.3
+
+Add Icon
+
 ### 0.0.2
 
 Fix Typos
