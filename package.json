@@ -11,7 +11,7 @@
   ],
   "activationEvents": [],
   "main": "./src/extension.js",
-  "icon": "./images/icon.png",
+  "icon": "https://raw.githubusercontent.com/artT14/npm-dependancy-graph/main/images/logo.png",
   "repository": "https://github.com/artT14/npm-dependancy-graph",
   "publisher": "ArtT14",
   "contributes": {
