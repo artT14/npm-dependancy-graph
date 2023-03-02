@@ -1,8 +1,8 @@
 {
   "name": "npm-dependancy-graph",
-  "displayName": "npm dependancy graph",
+  "displayName": "Visualize NPM Dependencies",
   "description": "Visualize the dependancy graph of your project with a click of a button, explore vulnerabilities",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.75.0"
   },
@@ -11,6 +11,7 @@
   ],
   "activationEvents": [],
   "main": "./src/extension.js",
+  "icon": "./images/icon.png",
   "repository": "https://github.com/artT14/npm-dependancy-graph",
   "publisher": "ArtT14",
   "contributes": {
