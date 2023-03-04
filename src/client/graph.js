@@ -1,3 +1,4 @@
+const { compareVersions, compare, satisfies, validate } = window.compareVersions
 ////////////////////////////////////////////////////////////////
 // MESSAGE HANDLER & DISPATCH LOGIC
 ////////////////////////////////////////////////////////////////
@@ -246,19 +247,22 @@ function drawInteractiveTree(graphData, rootId){
 function drawVulnerabilityTree(graphData, audit){
 	function getVulnerabilityPaint(node){
 		if (audit.vulnerabilities.hasOwnProperty(node.name)){
-			switch (audit.vulnerabilities[node.name].severity){
-				case 'low':
-					return 'yellow';
-					break;
-				case 'medium':
-					return 'orange';
-					break;
-				case 'high':
-					return 'red';
-					break;
-				case 'critical':
-					return 'purple';
-					break;
+			console.log(node.version, audit.vulnerabilities[node.name].range)
+			if(satisfies(node.version, audit.vulnerabilities[node.name].range)){
+				switch (audit.vulnerabilities[node.name].severity){
+					case 'low':
+						return 'yellow';
+						break;
+					case 'medium':
+						return 'orange';
+						break;
+					case 'high':
+						return 'red';
+						break;
+					case 'critical':
+						return 'purple';
+						break;
+				}
 			}
 		}
 		return 'green';
