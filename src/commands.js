@@ -1,5 +1,6 @@
 const vscode = require('vscode');
-const {getNpmData,getVulnerabilityData} = require('./data.js')
+const {getNpmData,getVulnerabilityData} = require('./getData.js')
+const {parseNpmGraph, parseNpmTree} = require('./parseData.js')
 const {getWebviewContent} = require('./render.js')
 
 
@@ -15,10 +16,11 @@ async function npmFullGraph(context){
             message: "Loading package data..."
         });
     if (!lsData) return;
+    const {graphData, rootId} = parseNpmGraph(lsData);
     const panel = createWebviewPanel({title:'NPM Full Graph'})
     const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
-    panel.webview.postMessage({command:"fullGraph", data:lsData});
+    panel.webview.postMessage({command:"fullGraph", graphData, rootId});
     panel.webview.html = getWebviewContent(scripts);
 }
 
@@ -30,10 +32,11 @@ async function npmExpandableTree(context){
             message: "Loading package data..."
         });
     if (!lsData) return;
+    const {graphData, rootId} = parseNpmTree(lsData);
     const panel = createWebviewPanel({title:'NPM Expandable Tree'})
     const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
-    panel.webview.postMessage({command:"expandableTree", data:lsData});
+    panel.webview.postMessage({command:"expandableTree", graphData, rootId});
     panel.webview.html = getWebviewContent(scripts);
 }
 
@@ -50,10 +53,11 @@ async function npmVulnerabilities(context){
             message: "Loading vulnerability data..."
         });
     if (!lsData || !vulnData) return;
+    const {graphData, rootId} = parseNpmGraph(lsData);
     const panel = createWebviewPanel({title:'NPM Vulnerabilities'})
     const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
-    panel.webview.postMessage({command:"vulnerabilities", data: lsData, vulnData});
+    panel.webview.postMessage({command:"vulnerabilities", graphData, rootId, vulnData});
     panel.webview.html = getWebviewContent(scripts);
 }
 

@@ -1,133 +1,29 @@
-const { compareVersions, compare, satisfies, validate } = window.compareVersions
 ////////////////////////////////////////////////////////////////
 // MESSAGE HANDLER & DISPATCH LOGIC
 ////////////////////////////////////////////////////////////////
 document.addEventListener('DOMContentLoaded', function () {
 	window.addEventListener('message', event => {
-		const message = event.data; // The JSON data our extension sent
-		switch (message.command) {
+		console.log(event.data)
+		const {command, ...message} = event.data; // The JSON data our extension sent
+		switch (command) {
 			case 'fullGraph':{
-				const {graphData, rootId} = parseNpmGraph(message.data)
-				drawTree(graphData, rootId)
+				const {graphData, rootId} = message;
+				drawTree(graphData, rootId);
 				break;
 			}
 			case 'expandableTree':{
-				const {graphData, rootId} = parseNpmTree(message.data)
-				drawInteractiveTree(graphData, rootId)
+				const {graphData, rootId} = message;
+				drawInteractiveTree(graphData, rootId);
 				break;
 			}
 			case 'vulnerabilities':{
-				const {data,vulnData} = message
-				const vulnObj = JSON.parse(vulnData)
-				console.log(data,vulnObj)
-				const {graphData, rootId} = parseNpmGraph(message.data)
-				drawVulnerabilityTree(graphData, vulnObj)
+				const {graphData, rootId, vulnData} = message;
+				const vulnObj = JSON.parse(vulnData);
+				drawVulnerabilityTree(graphData, vulnObj);
 			}
 		}
 	})
 })
-
-////////////////////////////////////////////////////////////////
-//PARSING FUNCTIONS
-////////////////////////////////////////////////////////////////
-function parseNpmGraph (string){
-	const graphData = {nodes: [],links: []} // graph object to be returned 
-	
-	const hash = new Set(); // set that keeps track of dupes
-	const tree = JSON.parse(string) //parse JSON string to JS object
-	const root = tree.name+"^"+tree.version; // keep track of root
-
-	function dfs(node, data, layer){ // dfs for traversing JSON tree
-		if (!data.dependencies) return;
-		Object.entries(data.dependencies)
-			.forEach(([key, val])=>{
-				const curr = key+"^"+val.version
-				const dependant = node+"^"+data.version
-				if(!hash.has(curr)){
-					graphData.nodes.push({
-						id: curr,
-						name: key,
-						version: val.version,
-						layer,
-						collapsed: curr !== root,
-						childLinks: [] 
-					});
-					hash.add(curr);
-				}
-				if(!hash.has(curr+dependant)){
-					graphData.links.push({
-						source: dependant,
-						target: curr,
-					})
-					hash.add(curr+dependant)
-				}
-				dfs(key,val,layer+1);
-			})
-	}
-	// add root
-	graphData.nodes.push({
-		id: root,
-		name: tree.name,
-		version: tree.version,
-		layer: 1,
-		collapsed: false,
-		childLinks: [] 
-	})
-	hash.add(root)
-	dfs(tree.name, tree, 2)
-
-	return {graphData, rootId: root};
-}
-
-function parseNpmTree (string){
-	const graphData = {nodes: [],links: []} // graph object to be returned 
-	
-	const dupes = {}; // set that keeps track of dupes
-	const tree = JSON.parse(string) //parse JSON string to JS object
-	const root = tree.name+"^"+tree.version; // keep track of root
-
-	function dfs(node, data, layer){ // dfs for traversing JSON tree
-		if (!data.dependencies) return;
-		Object.entries(data.dependencies)
-			.forEach(([key, val])=>{
-				const curr = key+"^"+val.version
-				const dependant = node+"^"+data.version
-				let duplicate = false
-				if (curr in dupes){
-					dupes[curr]++;
-					duplicate = true
-				}
-				else dupes[curr] = 1
-				graphData.nodes.push({
-					id: curr+dupes[curr],
-					name: key,
-					version: val.version,
-					duplicate,
-					layer,
-					collapsed: curr !== root,
-					childLinks: []
-				});
-				graphData.links.push({
-					source: dependant+dupes[dependant],
-					target: curr+dupes[curr],
-				})
-				dfs(key,val,layer+1);
-			})
-	}
-	// add root
-	dupes[root] = 1
-	graphData.nodes.push({
-		id: root+dupes[root],		
-		name: tree.name,
-		version: tree.version,
-		layer: 1,
-		collapsed: false,
-		childLinks: [] 
-	})
-	dfs(tree.name, tree, 2)
-
-	return {graphData, rootId: root+dupes[root]};
-}
 
 ////////////////////////////////////////////////////////////////
 //RENDERING FUNCTIONS
@@ -247,8 +143,6 @@ function drawInteractiveTree(graphData, rootId){
 function drawVulnerabilityTree(graphData, audit){
 	function getVulnerabilityPaint(node){
 		if (audit.vulnerabilities.hasOwnProperty(node.name)){
-			console.log(node.version, audit.vulnerabilities[node.name].range)
-			if(satisfies(node.version, audit.vulnerabilities[node.name].range)){
 				switch (audit.vulnerabilities[node.name].severity){
 					case 'low':
 						return 'yellow';
@@ -263,7 +157,6 @@ function drawVulnerabilityTree(graphData, audit){
 						return 'purple';
 						break;
 				}
-			}
 		}
 		return 'green';
 	}
