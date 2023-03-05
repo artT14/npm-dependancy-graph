@@ -6,6 +6,11 @@ function getWebviewContent(scripts) {
 			<script src="https://unpkg.com/force-graph/dist/force-graph.min.js"></script>
 			${generateScriptTags(scripts)}
 			<!--<script src="../../dist/force-graph.js"></script>-->
+			<style>
+				:root {
+					--link-color: var(--vscode-editor-foreground)33;
+				}
+			</style>
 		</head>
 		
 		<body>

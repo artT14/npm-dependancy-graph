@@ -44,7 +44,7 @@ function drawTree(graphData, rootId){
 	const elem = document.getElementById('graph');
 	const Graph = ForceGraph()(elem)
 		.graphData(graphData)
-		.linkColor(() => 'rgba(255,255,255,0.1)')
+		.linkColor(() => getComputedStyle(document.documentElement).getPropertyValue('--link-color'))
 		.nodeLabel((node)=>node.name+"^"+node.version)
 		.nodeAutoColorBy('layer')
 		.nodeCanvasObject((node, ctx) => nodePaint(node, ctx))
@@ -96,7 +96,7 @@ function drawInteractiveTree(graphData, rootId){
 	let clickedNode = null
 	const elem = document.getElementById('graph');
 	const Graph = ForceGraph()(elem)
-		.linkColor(() => 'rgba(255,255,255,0.1)')
+		.linkColor(() => getComputedStyle(document.documentElement).getPropertyValue('--link-color'))
 		.linkDirectionalParticles(1)
 		.linkDirectionalParticleSpeed(0.001)
 		.linkDirectionalParticleWidth(2)
@@ -170,7 +170,7 @@ function drawVulnerabilityTree(graphData){
 	const elem = document.getElementById('graph');
 	const Graph = ForceGraph()(elem)
 		.graphData(graphData)
-		.linkColor(() => 'rgba(255,255,255,0.1)')
+		.linkColor(() => getComputedStyle(document.documentElement).getPropertyValue('--link-color'))
 		.nodeLabel((node)=>node.name+"^"+node.version)
 		.nodeCanvasObject((node, ctx) => nodePaint(node, ctx))
 		.linkCurvature('curvature')

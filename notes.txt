@@ -5,3 +5,8 @@ TODO:
 POSSIBLE ADDITIONAL FEATURES:
 - center the camera on clicked node when expanding tree
 - improve GUI, by adding more controls
+
+-----------------
+References:
+- webview: https://code.visualstudio.com/api/extension-guides/webview
+- colors: https://code.visualstudio.com/api/references/theme-color
