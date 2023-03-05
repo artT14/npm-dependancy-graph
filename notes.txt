@@ -1,6 +1,6 @@
 TODO:
-- Fix Known Issues
 - Refactor Graph Code
+- Display More Info
 
 POSSIBLE ADDITIONAL FEATURES:
 - center the camera on clicked node when expanding tree
