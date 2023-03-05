@@ -48,27 +48,33 @@ This extension does not expose any settings yet but it may in the future.
 
 ## Known Issues
 
-* When visualizing vulnerabilities, your program may contain multiple instances of the same package in different versions. The graph may indicate a vulnerability on a version of a package that has since patched the vulnerability but another package is using an old vulnerable version of the afformentiond package. 
 * The graph links might be hard to visualize on light-mode editors as the links are colored white by default.
 
 ## Release Notes
 
-### 0.0.3
+### **0.0.4**
 
-Add Icon
+Fixed the following known issue listed:
+>When visualizing vulnerabilities, your program may contain multiple instances of the same package in different versions. The graph may indicate a vulnerability on a version of a package that has since patched the vulnerability but another package is using an old vulnerable version of the afformentiond package. 
 
-### 0.0.2
+### **0.0.3**
 
-Fix Typos
+>Add Icon
 
-### 0.0.1
+### **0.0.2**
 
-Initial release of npm-dependancy-graph
+>Fix Typos
+
+### **0.0.1**
+
+>Initial release of npm-dependancy-graph
 
 ---
 
 ## Dev TODO List:
 * Fix known issues
+
+## Dev cosntant improvements list:
 * Refactor code
 * Improve performance
 * Improve GUI

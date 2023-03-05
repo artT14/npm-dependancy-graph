@@ -5,6 +5,3 @@ TODO:
 POSSIBLE ADDITIONAL FEATURES:
 - center the camera on clicked node when expanding tree
 - improve GUI, by adding more controls
-
-POSSIBLE BUGS:
-- vulnerability graph may display vulnerability for a version of a package that has patched the vulnerability, include a version comparator
