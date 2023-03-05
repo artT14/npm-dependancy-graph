@@ -16,7 +16,8 @@ async function npmFullGraph(context){
             message: "Loading package data..."
         });
     if (!lsData) return;
-    const {graphData, rootId} = parseNpmGraph(lsData);
+    const tree = JSON.parse(lsData)
+    const {graphData, rootId} = parseNpmGraph(tree);
     const panel = createWebviewPanel({title:'NPM Full Graph'})
     const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
@@ -32,7 +33,8 @@ async function npmExpandableTree(context){
             message: "Loading package data..."
         });
     if (!lsData) return;
-    const {graphData, rootId} = parseNpmTree(lsData);
+    const tree = JSON.parse(lsData)
+    const {graphData, rootId} = parseNpmTree(tree);
     const panel = createWebviewPanel({title:'NPM Expandable Tree'})
     const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
@@ -47,17 +49,19 @@ async function npmVulnerabilities(context){
             title: 'NPM Vulnerabilities',
             message: "Loading package data..."
         });
-    const vulnData = await loadDataWithProgress({
+    const audit = await loadDataWithProgress({
             dataFunc: getVulnerabilityData,
             title: 'NPM Vulnerabilities',
             message: "Loading vulnerability data..."
         });
-    if (!lsData || !vulnData) return;
-    const {graphData, rootId} = parseNpmGraph(lsData);
+    if (!lsData || !audit) return;
+    const tree = JSON.parse(lsData)
+    const vulnerabilities = JSON.parse(audit).vulnerabilities;
+    const {graphData, rootId} = parseNpmGraph(tree, vulnerabilities);
     const panel = createWebviewPanel({title:'NPM Vulnerabilities'})
     const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
-    panel.webview.postMessage({command:"vulnerabilities", graphData, rootId, vulnData});
+    panel.webview.postMessage({command:"vulnerabilities", graphData, rootId});
     panel.webview.html = getWebviewContent(scripts);
 }
 

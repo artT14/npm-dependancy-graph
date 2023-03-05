@@ -1,13 +1,12 @@
+const semverSatisfies = require('semver/functions/satisfies')
 ////////////////////////////////////////////////////////////////
 //PARSING FUNCTIONS
 ////////////////////////////////////////////////////////////////
-function parseNpmGraph (string){
+function parseNpmGraph (tree, vuln = {}){
 	const graphData = {nodes: [],links: []} // graph object to be returned 
 	
 	const hash = new Set(); // set that keeps track of dupes
-	const tree = JSON.parse(string) //parse JSON string to JS object
 	const root = tree.name+"^"+tree.version; // keep track of root
-
 	function dfs(node, data, layer){ // dfs for traversing JSON tree
 		if (!data.dependencies) return;
 		Object.entries(data.dependencies)
@@ -19,9 +18,10 @@ function parseNpmGraph (string){
 						id: curr,
 						name: key,
 						version: val.version,
+                        vulnerability: vuln.hasOwnProperty(key) && semverSatisfies(val.version, vuln[key].range) ? vuln[key].severity : 'none',
 						layer,
 						collapsed: curr !== root,
-						childLinks: [] 
+						childLinks: []
 					});
 					hash.add(curr);
 				}
@@ -46,15 +46,13 @@ function parseNpmGraph (string){
 	})
 	hash.add(root)
 	dfs(tree.name, tree, 2)
-
 	return {graphData, rootId: root};
 }
 
-function parseNpmTree (string){
+function parseNpmTree (tree){
 	const graphData = {nodes: [],links: []} // graph object to be returned 
 	
 	const dupes = {}; // set that keeps track of dupes
-	const tree = JSON.parse(string) //parse JSON string to JS object
 	const root = tree.name+"^"+tree.version; // keep track of root
 
 	function dfs(node, data, layer){ // dfs for traversing JSON tree

@@ -17,9 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
 				break;
 			}
 			case 'vulnerabilities':{
-				const {graphData, rootId, vulnData} = message;
-				const vulnObj = JSON.parse(vulnData);
-				drawVulnerabilityTree(graphData, vulnObj);
+				const {graphData, rootId} = message;
+				drawVulnerabilityTree(graphData);
 			}
 		}
 	})
@@ -140,25 +139,24 @@ function drawInteractiveTree(graphData, rootId){
 }
 
 // Draw Full Vulnerability Graph
-function drawVulnerabilityTree(graphData, audit){
+function drawVulnerabilityTree(graphData){
 	function getVulnerabilityPaint(node){
-		if (audit.vulnerabilities.hasOwnProperty(node.name)){
-				switch (audit.vulnerabilities[node.name].severity){
-					case 'low':
-						return 'yellow';
-						break;
-					case 'medium':
-						return 'orange';
-						break;
-					case 'high':
-						return 'red';
-						break;
-					case 'critical':
-						return 'purple';
-						break;
-				}
+		switch (node.vulnerability){
+			case 'low':
+				return 'yellow';
+				break;
+			case 'medium':
+				return 'orange';
+				break;
+			case 'high':
+				return 'red';
+				break;
+			case 'critical':
+				return 'purple';
+				break;
+			default:
+				return 'green'
 		}
-		return 'green';
 	}
 	function nodePaint( node, ctx) {
 		ctx.fillStyle = getVulnerabilityPaint(node);
