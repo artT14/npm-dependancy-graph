@@ -48,9 +48,14 @@ This extension does not expose any settings yet but it may in the future.
 
 ## Known Issues
 
-* The graph links might be hard to visualize on light-mode editors as the links are colored white by default.
+None known, please submit any issues via GitHub [Issues](https://github.com/artT14/npm-dependancy-graph/issues).
 
 ## Release Notes
+
+### **0.0.6**
+
+Fixed the following known issue listed:
+> The graph links might be hard to visualize on light-mode editors as the links are colored white by default.
 
 ### **0.0.5**
 
@@ -76,7 +81,7 @@ Fixed the following known issue listed:
 ---
 
 ## Dev TODO List:
-* Fix known issues
+* Keep making improvements
 
 ## Dev constant improvements list:
 * Refactor code
