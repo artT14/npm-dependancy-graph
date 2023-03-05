@@ -74,7 +74,7 @@ Fixed the following known issue listed:
 ## Dev TODO List:
 * Fix known issues
 
-## Dev cosntant improvements list:
+## Dev constant improvements list:
 * Refactor code
 * Improve performance
 * Improve GUI
