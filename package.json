@@ -45,7 +45,7 @@
       }
     ],
     "menus": {
-      "editor/title":[
+      "editor/title": [
         {
           "command": "npm-dependancy-graph.full-graph",
           "when": "resourceFilename == package-lock.json || resourceFilename == package.json"
@@ -59,7 +59,7 @@
           "when": "resourceFilename == package-lock.json || resourceFilename == package.json"
         }
       ],
-      "editor/context":[
+      "editor/context": [
         {
           "command": "npm-dependancy-graph.full-graph",
           "when": "resourceFilename == package-lock.json || resourceFilename == package.json"
@@ -93,6 +93,7 @@
   },
   "dependencies": {
     "force-graph": "^1.43.0",
-    "npm": "^9.5.0"
+    "npm": "^9.5.0",
+    "semver": "^7.3.8"
   }
 }

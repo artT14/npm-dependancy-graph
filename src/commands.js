@@ -1,5 +1,6 @@
 const vscode = require('vscode');
-const {getNpmData,getVulnerabilityData} = require('./data.js')
+const {getNpmData,getVulnerabilityData} = require('./getData.js')
+const {parseNpmGraph, parseNpmTree} = require('./parseData.js')
 const {getWebviewContent} = require('./render.js')
 
 
@@ -15,10 +16,12 @@ async function npmFullGraph(context){
             message: "Loading package data..."
         });
     if (!lsData) return;
+    const tree = JSON.parse(lsData)
+    const {graphData, rootId} = parseNpmGraph(tree);
     const panel = createWebviewPanel({title:'NPM Full Graph'})
     const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
-    panel.webview.postMessage({command:"fullGraph", data:lsData});
+    panel.webview.postMessage({command:"fullGraph", graphData, rootId});
     panel.webview.html = getWebviewContent(scripts);
 }
 
@@ -30,10 +33,12 @@ async function npmExpandableTree(context){
             message: "Loading package data..."
         });
     if (!lsData) return;
+    const tree = JSON.parse(lsData)
+    const {graphData, rootId} = parseNpmTree(tree);
     const panel = createWebviewPanel({title:'NPM Expandable Tree'})
     const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
-    panel.webview.postMessage({command:"expandableTree", data:lsData});
+    panel.webview.postMessage({command:"expandableTree", graphData, rootId});
     panel.webview.html = getWebviewContent(scripts);
 }
 
@@ -44,16 +49,19 @@ async function npmVulnerabilities(context){
             title: 'NPM Vulnerabilities',
             message: "Loading package data..."
         });
-    const vulnData = await loadDataWithProgress({
+    const audit = await loadDataWithProgress({
             dataFunc: getVulnerabilityData,
             title: 'NPM Vulnerabilities',
             message: "Loading vulnerability data..."
         });
-    if (!lsData || !vulnData) return;
+    if (!lsData || !audit) return;
+    const tree = JSON.parse(lsData)
+    const vulnerabilities = JSON.parse(audit).vulnerabilities;
+    const {graphData, rootId} = parseNpmGraph(tree, vulnerabilities);
     const panel = createWebviewPanel({title:'NPM Vulnerabilities'})
     const scripts = getScripts(panel,context);
     panel.iconPath = getIconPath(context);
-    panel.webview.postMessage({command:"vulnerabilities", data: lsData, vulnData});
+    panel.webview.postMessage({command:"vulnerabilities", graphData, rootId});
     panel.webview.html = getWebviewContent(scripts);
 }
 
