@@ -1,4 +1,5 @@
 TODO:
+- localize forcegraph.js
 - Refactor Graph Code
 - Display More Info
 
