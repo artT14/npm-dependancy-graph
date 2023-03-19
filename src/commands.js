@@ -102,6 +102,7 @@ function createWebviewPanel({title}){
 
 function getScripts(panel,context){
     return [
+        panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri,'src', 'client', 'force-graph.min.js')),
         panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri,'src', 'client', 'graph.js')),
     ]
 }

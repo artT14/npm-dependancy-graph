@@ -3,7 +3,6 @@ function getWebviewContent(scripts) {
 		<html lang="en">
 		<head>
 			<style> body { margin: 0; } </style>
-			<script src="https://unpkg.com/force-graph/dist/force-graph.min.js"></script>
 			${generateScriptTags(scripts)}
 			<!--<script src="../../dist/force-graph.js"></script>-->
 			<style>

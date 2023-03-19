@@ -52,6 +52,10 @@ None known, please submit any issues via GitHub [Issues](https://github.com/artT
 
 ## Release Notes
 
+### **0.0.7**
+
+> Localized force-graph scripts, can now display graph without internet access
+
 ### **0.0.6**
 
 Fixed the following known issue listed:
