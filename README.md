@@ -85,7 +85,7 @@ Fixed the following known issue listed:
 ---
 
 ## Dev TODO List:
-* Keep making improvements
+* Offer support for other package managers, like `yarn` and `pnpm`
 
 ## Dev constant improvements list:
 * Refactor code
